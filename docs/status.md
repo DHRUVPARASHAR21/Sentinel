@@ -13,6 +13,7 @@ Milestone 1 — Repository foundation and contracts — **not started**. Release
 - Milestone 7 — CLI and operator workflow — **complete**. `sentinel` provides actionable local commands for status, `ps`, inspect, services, lifecycle actions, doctor, and version. Its real-binary integration test exercises the daemon boundary.
 - Hardening milestone — **complete**. Added bounded process/TCP/HTTP health-check primitives, Prometheus renderer with bounded service labels, JSON lifecycle logger, and a hardened systemd unit.
 - Release preparation — **complete**. Added Debian staging package, Ubuntu CI, Makefile targets, public README, contributor guidance, and a runnable demo procedure. License selection remains an explicit owner decision.
+- Final audit — **complete**. Critical control-peer, metrics-startup, process-group cleanup, and health-recovery issues were repaired; the audit records remaining preview-release limitations.
 
 ## Known issues
 
@@ -39,3 +40,4 @@ Milestone 1 — Repository foundation and contracts — **not started**. Release
 2. Align the Ubuntu Go toolchain with the selected project baseline before establishing Linux CI/package validation.
 3. Complete milestone 5 health checking and reload semantics; the current `health` and `metrics` API responses intentionally report `not-configured` until those contracts exist.
 4. Choose a repository license before accepting public contributions or distributing release artifacts broadly.
+5. Address the remaining limitations in `docs/release-audit.md` before calling Sentinel a stable public release.

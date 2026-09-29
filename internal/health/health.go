@@ -74,6 +74,7 @@ func (r *Runner) runOnce(parent context.Context, onChange func(Result)) {
 	if err == nil {
 		r.result.ConsecutiveSuccess++
 		r.result.ConsecutiveFailure = 0
+		r.result.LastError = nil
 		if r.result.ConsecutiveSuccess >= r.check.SuccessThreshold {
 			r.result.Healthy = true
 		}

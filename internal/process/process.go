@@ -29,6 +29,7 @@ func Start(spec Spec) (*Child, error) {
 	}
 	cmd := exec.Command(spec.Path, spec.Args...)
 	cmd.Env, cmd.Dir = spec.Env, spec.Dir
+	configureCmd(cmd)
 	if err := cmd.Start(); err != nil {
 		return nil, err
 	}

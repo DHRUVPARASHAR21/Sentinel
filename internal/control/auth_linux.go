@@ -34,7 +34,7 @@ func authorize(conn net.Conn) error {
 	if credentialErr != nil {
 		return credentialErr
 	}
-	if uid != uint32(os.Geteuid()) {
+	if uid != 0 && uid != uint32(os.Geteuid()) {
 		return fmt.Errorf("control: unauthorized local caller")
 	}
 	return nil

@@ -55,10 +55,8 @@ The socket is private (`0700` parent, `0600` socket) and Linux checks peer crede
 ## Demo
 
 1. `make build`
-2. Start `./dist/sentineld --socket /tmp/sentinel.sock --service demo=/bin/false`.
-3. Run `./dist/sentinel --socket /tmp/sentinel.sock start demo`; it exits and is restarted according to policy.
-4. Inspect `./dist/sentinel --socket /tmp/sentinel.sock services` and `curl http://127.0.0.1:9464/metrics`.
-5. Press `Ctrl-C` in the daemon terminal for graceful shutdown.
+2. Run `bash scripts/demo.sh` on Ubuntu.
+3. The script starts the daemon, triggers a `/bin/false` crash loop, observes restart state through the CLI, scrapes metrics, and sends graceful `SIGTERM` shutdown.
 
 ## Limitations and roadmap
 

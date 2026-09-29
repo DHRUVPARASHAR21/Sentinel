@@ -9,6 +9,7 @@ import (
 	"github.com/sentinel/sentinel/internal/logging"
 	"github.com/sentinel/sentinel/internal/process"
 	"github.com/sentinel/sentinel/internal/supervisor"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
@@ -43,11 +44,15 @@ func main() {
 	}
 	logger := logging.New()
 	logger.Event("daemon_started", map[string]any{"socket": socket})
-	metricsServer := &http.Server{Addr: metricsListen, Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+	metricsListener, err := net.Listen("tcp", metricsListen)
+	if err != nil {
+		fatal(fmt.Errorf("cannot listen for metrics at %s: %w", metricsListen, err))
+	}
+	metricsServer := &http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/plain; version=0.0.4")
 		_, _ = w.Write([]byte(d.Metrics()))
 	})}
-	go func() { _ = metricsServer.ListenAndServe() }()
+	go func() { _ = metricsServer.Serve(metricsListener) }()
 	ctx, cancel := signal.NotifyContext(context.Background(), daemonSignals()...)
 	defer cancel()
 	defer func() {
