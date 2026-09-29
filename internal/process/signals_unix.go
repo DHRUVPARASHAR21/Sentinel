@@ -11,13 +11,15 @@ import (
 var errProcessDone = errors.New("process already exited")
 
 func sendTerminate(p *os.Process) error {
-	if err := syscall.Kill(-p.Pid, syscall.SIGTERM); errors.Is(err, os.ErrProcessDone) || err == syscall.ESRCH {
+	err := syscall.Kill(-p.Pid, syscall.SIGTERM)
+	if errors.Is(err, os.ErrProcessDone) || err == syscall.ESRCH {
 		return errProcessDone
 	}
 	return err
 }
 func sendKill(p *os.Process) error {
-	if err := syscall.Kill(-p.Pid, syscall.SIGKILL); errors.Is(err, os.ErrProcessDone) || err == syscall.ESRCH {
+	err := syscall.Kill(-p.Pid, syscall.SIGKILL)
+	if errors.Is(err, os.ErrProcessDone) || err == syscall.ESRCH {
 		return errProcessDone
 	}
 	return err
