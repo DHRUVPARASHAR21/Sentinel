@@ -18,6 +18,7 @@ Milestone 1 — Repository foundation and contracts — **not started**. Release
 ## Known issues
 
 - GitHub CI and Debian package validation are configured; release publication and signed artifacts remain future work.
+- CI pins `govulncheck` v1.0.4 because it is compatible with Sentinel's declared Go 1.20 baseline; use of `@latest` would require a newer Go toolchain.
 - Milestone 1's configuration CLI and Makefile contract have not been implemented; do not mark it complete based on the module alone.
 - Ubuntu WSL provides Go 1.18.1 for the procfs integration test, while the Windows development toolchain is Go 1.20.4. Align the Ubuntu toolchain with the project baseline before using it as the primary CI/package environment.
 
