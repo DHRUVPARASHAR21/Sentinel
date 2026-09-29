@@ -37,7 +37,7 @@ curl http://127.0.0.1:9464/metrics
 
 ## Development and tests
 
-Requires Go 1.20+ and Ubuntu for Linux integration/package validation.
+Requires Go 1.25.13+ and Ubuntu for Linux integration/package validation.
 
 ```sh
 make build

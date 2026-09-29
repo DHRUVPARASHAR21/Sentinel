@@ -51,7 +51,7 @@ All completed successfully in the Ubuntu WSL environment after `make clean`:
 ```sh
 make clean
 make verify
-go run golang.org/x/vuln/cmd/govulncheck@v1.0.4 ./...
+go run golang.org/x/vuln/cmd/govulncheck@v1.2.0 ./...
 make package
 dpkg-deb --info packaging/debian/out/*.deb
 systemd-analyze verify packaging/systemd/sentinel.service

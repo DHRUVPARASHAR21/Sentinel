@@ -7,18 +7,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
-        # Sentinel currently has no module dependencies and therefore no
-        # go.sum for setup-go to use as a stable cache key.
-        with: {go-version: '1.20.x', cache: false}
+        # Pin the toolchain to the latest Go 1.25 security release. Sentinel
+        # has no module dependencies, so setup-go has no go.sum cache key.
+        with: {go-version: '1.25.13', cache: false}
       - run: test -z "$(gofmt -l .)"
       - run: go vet ./...
       - run: go test ./... -count=1
       - run: go test -race ./...
       - run: go build ./cmd/sentineld ./cmd/sentinel
       - run: go test ./test/integration -count=1
-      # v1.0.4 is the newest govulncheck release that supports the declared
-      # Go 1.20 project baseline. Do not use @latest here: it follows the
-      # scanner's newer Go toolchain requirement rather than this project's.
-      - run: go run golang.org/x/vuln/cmd/govulncheck@v1.0.4 ./...
+      # v1.2.0 is the newest govulncheck release compatible with the Go 1.25
+      # toolchain. Keep the scanner pinned so a future toolchain requirement
+      # does not turn an otherwise healthy CI run into an infrastructure error.
+      - run: go run golang.org/x/vuln/cmd/govulncheck@v1.2.0 ./...
       - run: ./packaging/debian/build.sh
       - run: dpkg-deb --info packaging/debian/out/*.deb
