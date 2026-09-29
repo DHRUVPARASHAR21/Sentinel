@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-Milestone 1 — Repository foundation and contracts — **not started**. Milestones 2–4 and 6–7 were completed out of sequence at the user's request and are fully verified.
+Milestone 1 — Repository foundation and contracts — **not started**. Release packaging, developer targets, CI, and public documentation are implemented; configuration-driven activation remains pending milestone 1.
 
 ## Completed milestones
 
@@ -11,10 +11,12 @@ Milestone 1 — Repository foundation and contracts — **not started**. Milesto
 - Milestone 4 — Supervisor lifecycle — **complete**. The single-workload supervisor owns cancellation, child waiting, restart state, capped exponential backoff, retry/reset policy, graceful stop, and concurrent status access.
 - Milestone 6 — Daemon IPC — **complete**. `sentineld` exposes a bounded, peer-authorized, JSON-over-Unix-socket control protocol for daemon, process, service, health, and metrics status requests.
 - Milestone 7 — CLI and operator workflow — **complete**. `sentinel` provides actionable local commands for status, `ps`, inspect, services, lifecycle actions, doctor, and version. Its real-binary integration test exercises the daemon boundary.
+- Hardening milestone — **complete**. Added bounded process/TCP/HTTP health-check primitives, Prometheus renderer with bounded service labels, JSON lifecycle logger, and a hardened systemd unit.
+- Release preparation — **complete**. Added Debian staging package, Ubuntu CI, Makefile targets, public README, contributor guidance, and a runnable demo procedure. License selection remains an explicit owner decision.
 
 ## Known issues
 
-- The workspace is not a Git repository, so local repository metadata, issues, and CI history are unavailable.
+- GitHub CI and Debian package validation are configured; release publication and signed artifacts remain future work.
 - Milestone 1's configuration CLI and Makefile contract have not been implemented; do not mark it complete based on the module alone.
 - Ubuntu WSL provides Go 1.18.1 for the procfs integration test, while the Windows development toolchain is Go 1.20.4. Align the Ubuntu toolchain with the project baseline before using it as the primary CI/package environment.
 
@@ -36,3 +38,4 @@ Milestone 1 — Repository foundation and contracts — **not started**. Milesto
 1. Complete milestone 1's strict configuration validation and executable Makefile contract before beginning any later milestone.
 2. Align the Ubuntu Go toolchain with the selected project baseline before establishing Linux CI/package validation.
 3. Complete milestone 5 health checking and reload semantics; the current `health` and `metrics` API responses intentionally report `not-configured` until those contracts exist.
+4. Choose a repository license before accepting public contributions or distributing release artifacts broadly.

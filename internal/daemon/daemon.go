@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sentinel/sentinel/internal/control"
+	"github.com/sentinel/sentinel/internal/metrics"
 	"github.com/sentinel/sentinel/internal/procfs"
 	"github.com/sentinel/sentinel/internal/supervisor"
 	"sort"
@@ -16,6 +17,23 @@ type Service struct {
 	Name   string
 	Config supervisor.Config
 }
+
+func (d *Daemon) Metrics() string {
+	d.mu.RLock()
+	defer d.mu.RUnlock()
+	services := make([]metrics.Service, 0, len(d.services))
+	for name := range d.services {
+		item := metrics.Service{Name: name}
+		if s := d.running[name]; s != nil {
+			status := s.Status()
+			item.Restarts = status.Restarts
+			item.Healthy = status.State == supervisor.StateRunning
+		}
+		services = append(services, item)
+	}
+	return metrics.Render(services)
+}
+
 type Daemon struct {
 	proc     procfs.Reader
 	mu       sync.RWMutex

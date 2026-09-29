@@ -1,0 +1,8 @@
+Package: sentinel
+Version: @VERSION@
+Section: admin
+Priority: optional
+Architecture: @ARCH@
+Maintainer: Sentinel contributors <maintainers@example.invalid>
+Description: Linux process supervisor and observability daemon
+ Sentinel supervises declared local processes and exposes a local control API.

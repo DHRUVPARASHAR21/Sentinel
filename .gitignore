@@ -1,0 +1,5 @@
+dist/
+packaging/debian/out/
+packaging/debian/stage/
+*.test
+coverage.out

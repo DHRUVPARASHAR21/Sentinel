@@ -6,8 +6,10 @@ import (
 	"fmt"
 	"github.com/sentinel/sentinel/internal/control"
 	"github.com/sentinel/sentinel/internal/daemon"
+	"github.com/sentinel/sentinel/internal/logging"
 	"github.com/sentinel/sentinel/internal/process"
 	"github.com/sentinel/sentinel/internal/supervisor"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -16,8 +18,10 @@ import (
 
 func main() {
 	var socket string
+	var metricsListen string
 	var definitions values
 	flag.StringVar(&socket, "socket", "/run/sentinel/sentinel.sock", "Unix control socket")
+	flag.StringVar(&metricsListen, "metrics-listen", "127.0.0.1:9464", "Loopback Prometheus listener")
 	flag.Var(&definitions, "service", "NAME=/absolute/executable (repeatable)")
 	flag.Parse()
 	services := make([]daemon.Service, 0, len(definitions))
@@ -37,9 +41,20 @@ func main() {
 	if err := server.Listen(); err != nil {
 		fatal(err)
 	}
+	logger := logging.New()
+	logger.Event("daemon_started", map[string]any{"socket": socket})
+	metricsServer := &http.Server{Addr: metricsListen, Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; version=0.0.4")
+		_, _ = w.Write([]byte(d.Metrics()))
+	})}
+	go func() { _ = metricsServer.ListenAndServe() }()
 	ctx, cancel := signal.NotifyContext(context.Background(), daemonSignals()...)
 	defer cancel()
-	defer server.Close()
+	defer func() {
+		logger.Event("daemon_stopping", nil)
+		_ = metricsServer.Shutdown(context.Background())
+		_ = server.Close()
+	}()
 	defer d.Shutdown(context.Background())
 	if err := server.Serve(ctx); err != nil {
 		fatal(err)

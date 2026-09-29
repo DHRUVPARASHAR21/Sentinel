@@ -34,6 +34,8 @@ The control plane uses one versioned JSON request and one JSON response per Unix
 
 The monitor samples procfs at a configured interval. CPU percentage is calculated without assuming a tick frequency: `((process user ticks + system ticks) delta / aggregate /proc/stat cpu ticks delta) × online CPUs × 100`. This reports the share of one CPU a process used during the sample interval; aggregate kernel ticks include all online CPUs. Process uptime is `system uptime - (process start-time ticks / USER_HZ)`; Sentinel defaults `USER_HZ` to 100 and exposes an override for Linux environments with a different ABI value.
 
+Metrics use Prometheus text exposition with only configured service names as labels. PIDs, command lines, executable paths, and arbitrary process names are deliberately excluded from labels because they are high-cardinality or untrusted. Health checks are a single cancellable loop per configured check, with per-probe contexts and success/failure thresholds; supported probes are process-state, TCP connect, and HTTP GET.
+
 ## Linux assumptions
 
 - Linux procfs is mounted at `/proc`; file reads can race process exit and return `ENOENT`, partial content, or permission errors.

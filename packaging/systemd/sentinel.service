@@ -1,0 +1,27 @@
+[Unit]
+Description=Sentinel process supervisor
+After=network.target
+
+[Service]
+Type=simple
+User=sentinel
+Group=sentinel
+RuntimeDirectory=sentinel
+RuntimeDirectoryMode=0700
+StateDirectory=sentinel
+ExecStart=/usr/bin/sentineld --socket /run/sentinel/sentinel.sock
+Restart=on-failure
+RestartSec=5s
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=full
+ReadWritePaths=/run/sentinel /var/lib/sentinel
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+
+[Install]
+WantedBy=multi-user.target

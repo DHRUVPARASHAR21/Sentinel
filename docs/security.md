@@ -23,6 +23,14 @@
 - Secrets are configuration references where possible, not values logged or surfaced by status/metrics APIs.
 - Security-sensitive defaults must fail closed: unsafe directory ownership, mode, or socket peer identity rejects startup/request.
 
+## Hardening review
+
+- The socket parent is Linux-validated as owned by the daemon user and not accessible to group/other users; Sentinel removes only an existing socket, never an arbitrary path.
+- No shell is used for supervised commands. CLI service definitions require an absolute executable path; a future config loader must reject symlinks and untrusted writable ancestors before enabling arbitrary path input.
+- Procfs data, process names, and client JSON are untrusted. Request and procfs reads are bounded; logs use JSON fields and never include argv, environment, or raw client bodies.
+- Restart caps, health-check intervals/timeouts, client limits, and socket deadlines bound common resource-exhaustion paths. A compromised supervised child remains able to consume its own granted resources; cgroup/resource controls are deferred to systemd policy.
+- `packaging/systemd/sentinel.service` runs an unprivileged `sentinel` account with `NoNewPrivileges`, private temporary storage, read-only system paths, no capabilities, and explicit writable runtime/state paths. `ProtectSystem=full` is selected rather than `strict` because package/config paths still require ordinary system visibility; protected-home is compatible with the supported `/run` and `/var/lib` paths.
+
 ## Review triggers
 
 Security review is required for changes to process credentials/capabilities, socket authorization/protocol, listener exposure, config loading paths, signal rules, systemd hardening, package maintainer scripts, or logged/metric fields.
